@@ -1,6 +1,6 @@
 import sys
 from einops import rearrange, repeat
-sys.path.append("/home/archen/complete_isolate")
+sys.path.append("/home/jxzhou/PLM_PER")
 from sklearn.decomposition import TruncatedSVD
 from moe.experts import *
 from transformer.Transformer import *
