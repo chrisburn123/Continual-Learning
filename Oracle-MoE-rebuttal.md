@@ -1,8 +1,9 @@
 Review 1(2)
 Thank you for your professional review comments. Figures mentioned in the reply can be accessed at: https://anonymous.4open.science/r/ICML2025REBUTTAL-E158/README.md
-Q1
 __Q1__ It would be better to measure the temporal inconsistencies for the whole dataset and different layers. It would be more convincing to provide a metric to quantitatively measure the temporal inconsistency and show how Oracle-MOE reduces this inconsistency.
+
 __A1__ We propose temporal activation inconsistency, defined as the average number of inconsistent expert activation per 100 consecutive tokens per expert. Results over the entire dataset and across different models and layers are listed below. Existing MoEs show strong temporal activation inconsistency within all layers, while Oracle-MoE reduces this.
+
 ||DeepSeek-16B|Qwen-14B|Switch(Our pretrained)|Oracle(Our pretrained)|
 |---|---|---|---|---|
 |1st quarter of layers avg|80.84|81.56|69.20|6.03|
@@ -34,20 +35,25 @@ Oracle(Our pretrained)
 77.16
 75.44
 5.11
-Q2
+
 __Q2__ It would be better to provide some preliminary experiments to show the evidence of semantic locality in real datasets, .. across different models/layers/samples.
+
 __A2__ Experiments with DeepSeekMoE-16B and Qwen1.5-MoE-A2.7B on real chat datasets(Wizard-of-Wikipedia and Synthetic-Persona-Chat) are shown in Figure 1-5 in the link. Clear semantic locality is observed in all these models and datasets across different layers, indicating the potential of Oracle-MoE being a general-purpose solution.
-Q3
+
+
 __Q3__ Can the authors explain more about why the mapping of Q/K/attention score will group consecutive tokens with similar semantics? Why does this happen for different layers/samples?
+
 __A3__ Previous studies [A][B] on representation space have shown that semantically similar samples exhibit higher embedding similarity than semantically dissimilar ones, which is also widely validated in experiments with general-purpose large-scale models. We corroborate this observation and further identify a more fine-grained pattern: token representations encapsulate high-level and token identity semantics. Among tokens with the same identity, embeddings of those that share the same high-level semantics tend to be more similar. This pattern is consistently observed in models including DeepSeek-16B-2.8B and Qwen1.5-MoE-A2.7B, as illustrated in Figure 2 in our paper and Figure 1 in the link.
 Theoretical insights are also well-supported by [C][D]. Computing attention scores involves first assessing token correlations through inner products of Q and K vectors, followed by normalization via softmax, and finally allocating contextual information through V weighted by the normalized scores. Among these, the Q-K inner product effectively captures token similarity and reflects high-level semantic alignment, as visualized in Figure 2,4 in the link.
 [A] A Survey on Word Embeddings: From Shallow Models to Deep Learning" (Goldberg, 2017)
 [B] Deep Learning for NLP and Speech Recognition" (Hinton et al., 2012)
 [C]Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer" (Raffel et al., 2020)
 [D]Analyzing and Improving the Image Quality of StyleGAN" (Karras et al., 2020)
-Q4
+
 __Q4__ There are some approximations in the derivation of oracle-MOE. It would be better to validate such approximation in the experimental design.
+
 __A4__ Experiments validating this approximation are listed below: for token pairs with distance between [x,y), we count on average how many inconsistent expert activation is triggered. There is a statistically positive correlation that the higher the distance between tokens, the more likely they activate different experts. More results are in Figure 6 in the link.
+
 |EmbeddingDistance|[0.0,22)|[22,33)|[33,44)|[44,55)|[55,66)|[66,77)|[77,88)|[88,+∞)|
 |---|---|---|---|---|---|---|---|---|
 |Inconsistentactivationpertoken|0.0|0.083|0.222|0.377|0.576|0.770|0.878|0.903|
@@ -69,9 +75,11 @@ Inconsistent activation per token
 0.770
 0.878
 0.903
-Q5
+
 __Q5__ Ablation study on CSD and hyperparameter study of γ are missing. How does γ influence the proposed algorithm?
+
 __A5__ CSD and task performance lower-bound γ are key metrics we defined for the optimization problem of minimizing the model's CSD while maintaining its task performance above γ. We found that the expert number can influence γ, which is listed in the table below. On our training data, 8 experts seem to be the optimal configuration; however, when the number of experts increases, the performance of our method does not degrade compared to a standard MoE, demonstrating the robustness to the hyperparameters. Additionally, the fact that  using 8 experts is optimal in these experiments is also related to the dataset we used. We believe that as the model scale becomes larger and the dataset more diverse, the optimal number of experts will increase, and our model will still maintain robustness to hyperparameters.
+
 |Expert num|4|8|16|24|
 |--|--|--|--|--|
 |$$\Delta \gamma$$|+0.02|+0.60|+0.49|+0.36|
@@ -87,7 +95,7 @@ $$\Delta\gamma$$
 +0.36
 Review 2 (4)
 Thank you for your professional review comments. Figures mentioned in the reply can be accessed at: https://anonymous.4open.science/r/ICML2025REBUTTAL-E158/README.md
-Q1
+
 __Q1__ The paper could benefit from further discussions on practical deployment considerations and real-world constraints, such as more diverse hardware scenarios beyond the NVIDIA Jetson platform, like A100s and H100s.
 __A1__ Results on A100s are listed below. Our method still outperforms existing MoE by 50%~350%.
 Results on A100s are listed below. Our method still outperforms existing MoE by 50%~350%.
